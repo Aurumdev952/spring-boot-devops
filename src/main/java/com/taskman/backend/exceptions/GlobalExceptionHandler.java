@@ -3,6 +3,7 @@ package com.taskman.backend.exceptions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.taskman.backend.models.domains.ApiResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -19,35 +20,30 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+@Hidden
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @EnableWebMvc
 public class GlobalExceptionHandler {
-    private final MessageSource messageSource;
 
     public GlobalExceptionHandler(MessageSource messageSource) {
-        this.messageSource = messageSource;
     }
-
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, Locale locale) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getArgs(), locale);
-        return new ApiResponse<>(null,errorMessage, HttpStatus.NOT_FOUND).toResponseEntity();
+        return new ApiResponse<>(null,ex.getMessage(), HttpStatus.NOT_FOUND).toResponseEntity();
     }
 
     @ExceptionHandler(DuplicateRecordException.class)
     public ResponseEntity<?> duplicateRecordException(DuplicateRecordException ex, Locale locale) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getArgs(), locale);
-        return new ApiResponse<>(null,errorMessage, HttpStatus.BAD_REQUEST).toResponseEntity();
+        return new ApiResponse<>(null,ex.getMessage(), HttpStatus.BAD_REQUEST).toResponseEntity();
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> globalExceptionHandler(Exception ex, Locale locale) throws JsonProcessingException {
         String message = ex.getMessage();
-        String errorMessage = messageSource.getMessage("exceptions.validation.server",null , locale);
-        return new ApiResponse<>(message,errorMessage, HttpStatus.INTERNAL_SERVER_ERROR).toResponseEntity();
+        return new ApiResponse<>(message,message, HttpStatus.INTERNAL_SERVER_ERROR).toResponseEntity();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
