@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_DB: taskman
+      POSTGRES_USER: taskmanuser
+      POSTGRES_PASSWORD: taskmanpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskman_app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/taskman
+      SPRING_DATASOURCE_USERNAME: taskmanuser
+      SPRING_DATASOURCE_PASSWORD: taskmanpass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_SQL_INIT_MODE: always
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

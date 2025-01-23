@@ -1,0 +1,21 @@
+# Maven build directory
+target/
+
+# IntelliJ IDEA project files
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Docker files
+Dockerfile
+docker-compose.yml
