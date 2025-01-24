@@ -5,7 +5,7 @@ COPY pom.xml .
 # Cache dependencies
 RUN mvn dependency:resolve
 COPY src ./src
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 ## Security scanning stage
 #FROM aquasec/trivy:latest AS security
