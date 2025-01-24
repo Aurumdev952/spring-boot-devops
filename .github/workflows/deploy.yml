@@ -21,25 +21,16 @@ jobs:
 
   build-and-test:
     runs-on: ubuntu-latest
-    services:
-      docker:
-        image: docker:27.4.0
-        options: --privileged
-        ports:
-          - 2375:2375
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
+
     steps:
       - uses: actions/checkout@v4
-
-      # Build Docker image for testing
-      - name: Build Docker image
-        run: docker build -f Dockerfile.test -t my-app:test .
-
-      # Run tests inside the Docker container
-      - name: Run tests in Docker
-        run: |
-          docker run --rm -e ENV=test my-app:test mvn clean test -DforkCount=1 -Dmaven.surefire.forked.vm.args="-Xmx512m"
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: maven
+      - name: Test
+        run: ENV=test mvn clean test
 
   build-and-push-image:
     needs:
