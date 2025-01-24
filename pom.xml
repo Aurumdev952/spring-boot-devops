@@ -135,6 +135,7 @@
 				<configuration>
 					<argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
 				</configuration>
+				<version>3.2.5</version>
 			</plugin>
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
