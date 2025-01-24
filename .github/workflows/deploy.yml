@@ -51,15 +51,15 @@ jobs:
           echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
 
       - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v2
         with:
-          registry: https://ghcr.io
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: ghcr.io/taskman/backend:${{ needs.commit-hash.outputs.commit_hash }}
+          tags: ghcr.io/Aurumdev952/spring-boot-devops:${{ needs.commit-hash.outputs.commit_hash }}
