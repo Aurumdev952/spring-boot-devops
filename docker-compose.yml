@@ -1,21 +1,53 @@
 services:
+  reverse-proxy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    expose:
+      - 80 # http
+      - 443 # https
+    volumes:
+      - Caddyfile:/etc/caddy/Caddyfile
+      - caddy:/data
   postgres:
     image: postgres:16-alpine
     container_name: postgres
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 3
     environment:
       POSTGRES_DB: taskman
       POSTGRES_USER: taskmanuser
       POSTGRES_PASSWORD: taskmanpass
     ports:
       - "5432:5432"
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+  watchtower:
+    image: containrrr/watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "30"
+      - "--rolling-restart"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/aurumdev952/spring-boot-devops:latest
     container_name: taskman_app
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/taskman
       SPRING_DATASOURCE_USERNAME: taskmanuser
@@ -26,8 +58,14 @@ services:
       SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8080:8080"
+    deploy:
+      mode: replicated
+      replicas: 3
+    restart: always
     depends_on:
-      - postgres
+      postgres:
+          condition: service_healthy
 
 volumes:
   postgres_data:
+  caddy:
