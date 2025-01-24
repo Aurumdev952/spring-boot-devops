@@ -31,7 +31,7 @@ jobs:
       # Run tests inside the Docker container
       - name: Run tests in Docker
         run: |
-          docker run --rm my-app:test mvn clean test
+          docker run --rm -e ENV=test my-app:test mvn clean test -DforkCount=1 -Dmaven.surefire.forked.vm.args="-Xmx512m"
 
   build-and-push-image:
     needs:
