@@ -60,5 +60,6 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/taskman/backend:${{ needs.commit-hash.outputs.commit_hash }}
-          cache-from: type=local,src=/app/.buildx-cache
-          cache-to: type=local,dest=/app/.buildx-cache
+          cache-from: |
+            user/app:cache
+            type=local,src=path/to/dir
