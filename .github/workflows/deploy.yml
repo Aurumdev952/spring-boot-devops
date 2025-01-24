@@ -62,4 +62,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/aurumdev952/spring-boot-devops:${{ needs.commit-hash.outputs.commit_hash }}
+          tags: ghcr.io/aurumdev952/spring-boot-devops:latest
