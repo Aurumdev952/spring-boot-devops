@@ -21,6 +21,14 @@ jobs:
 
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:27.4.0
+        options: --privileged
+        ports:
+          - 2375:2375
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
     steps:
       - uses: actions/checkout@v4
 
