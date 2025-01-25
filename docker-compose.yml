@@ -10,7 +10,7 @@ services:
       - 80 # http
       - 443 # https
     volumes:
-      - Caddyfile:/etc/caddy/Caddyfile
+      - .Caddyfile:/etc/caddy/Caddyfile
       - caddy:/data
   postgres:
     image: postgres:16-alpine
@@ -44,7 +44,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   app:
-    image: ghcr.io/aurumdev952/spring-boot-devops
+    image: ghcr.io/aurumdev952/spring-boot-devops:latest
     container_name: taskman_app
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
